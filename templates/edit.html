@@ -1,0 +1,19 @@
+{% extends "_base.html" %}
+{% block content %}
+  <h2>Edit User</h2>
+
+  <form action={{url_for("update_user", id=current_user.id)}} method="POST">
+    {% for error in validation_errors %}
+      <li>{{error}}</li>
+    {% endfor %}
+    {# This hidden_tag is a CSRF security feature. #}
+    {{ form.csrf_token() }}
+    <div class="form-group">
+      {{ form.username.label }} {{ form.username(class="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ form.email.label }} {{ form.email(class="form-control") }}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+  </form>
+{% endblock %}
