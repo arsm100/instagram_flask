@@ -13,16 +13,16 @@ from instagram import db
 #     except:
 #         return None
 
-# def validation_preparation(func):
-#     def wrapper(obj, key, value):
-#         try:
-#             obj.validation_errors
-#         except AttributeError:
-#             obj.validation_errors = []
-#         with db.session.no_autoflush:
-#             func(obj, key, value)
+def validation_preparation(func):
+    def wrapper(obj, key, value):
+        try:
+            obj.validation_errors
+        except AttributeError:
+            obj.validation_errors = []
+        with db.session.no_autoflush:
+            func(obj, key, value)
 
-#     return wrapper
+    return wrapper
 
 
 class User(db.Model, UserMixin):
@@ -44,13 +44,8 @@ class User(db.Model, UserMixin):
         return f"{self.username} with email {self.email} saved to database!"
 
     @validates('username')
-    # @validation_preparation
+    @validation_preparation
     def validate_username(self, key, username):
-        try:
-            self.validation_errors
-        except AttributeError:
-            self.validation_errors = []
-
         if not username:
             self.validation_errors.append('No username provided')
 
@@ -65,23 +60,18 @@ class User(db.Model, UserMixin):
         return username
 
     @validates('email')
-    # @validation_preparation
+    @validation_preparation
     def validate_email(self, key, email):
-        try:
-            self.validation_errors
-        except AttributeError:
-            self.validation_errors = []
-        with db.session.no_autoflush:
-            if not email:
-                self.validation_errors.append('No email provided')
+        if not email:
+            self.validation_errors.append('No email provided')
 
-            if not re.match("[^@]+@[^@]+\.[^@]+", email):
-                self.validation_errors.append(
-                    'Provided email is not an email address')
+        if not re.match("[^@]+@[^@]+\.[^@]+", email):
+            self.validation_errors.append(
+                'Provided email is not an email address')
 
-            if (not self.email == email):
-                if User.query.filter_by(email=email).first():
-                    self.validation_errors.append('Email is already in use')
+        if (not self.email == email):
+            if User.query.filter_by(email=email).first():
+                self.validation_errors.append('Email is already in use')
 
         return email
 
