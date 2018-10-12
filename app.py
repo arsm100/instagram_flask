@@ -166,15 +166,16 @@ class User(db.Model, UserMixin):
         except AttributeError:
             self.validation_errors = []
 
-        if not username:
-            self.validation_errors.append('No username provided')
+        with db.session.no_autoflush:
+            if not username:
+                self.validation_errors.append('No username provided')
 
-        if (not self.username == username) and User.query.filter(User.username == username).first():
-            self.validation_errors.append('Username is already in use')
+            if (not self.username == username) and User.query.filter(User.username == username).first():
+                self.validation_errors.append('Username is already in use')
 
-        if len(username) < 5 or len(username) > 20:
-            self.validation_errors.append(
-                'Username must be between 5 and 20 characters')
+            if len(username) < 5 or len(username) > 20:
+                self.validation_errors.append(
+                    'Username must be between 5 and 20 characters')
 
         return username
 
@@ -185,15 +186,16 @@ class User(db.Model, UserMixin):
         except AttributeError:
             self.validation_errors = []
 
-        if not email:
-            self.validation_errors.append('No email provided')
+        with db.session.no_autoflush:
+            if not email:
+                self.validation_errors.append('No email provided')
 
-        if not re.match("[^@]+@[^@]+\.[^@]+", email):
-            self.validation_errors.append(
-                'Provided email is not an email address')
+            if not re.match("[^@]+@[^@]+\.[^@]+", email):
+                self.validation_errors.append(
+                    'Provided email is not an email address')
 
-        if (not self.email == email) and User.query.filter(User.email == email).first():
-            self.validation_errors.append('Email is already in use')
+            if (not self.email == email) and User.query.filter(User.email == email).first():
+                self.validation_errors.append('Email is already in use')
 
         return email
 
