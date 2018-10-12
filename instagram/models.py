@@ -6,13 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from instagram import db
 
 
-# @login_manager.user_loader
-# def load_user(user_id):
-#     try:
-#         return User.query.get(user_id)
-#     except:
-#         return None
-
 def validation_preparation(func):
     def wrapper(obj, key, value):
         try:
