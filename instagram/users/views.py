@@ -47,7 +47,6 @@ def edit(id):
 @users_blueprint.route('/<id>', methods=['POST'])
 @login_required
 def update(id):
-    print("-------> UPDATE ---->")
     form = EditUserForm(request.form)
 
     user = User.query.get(id)
@@ -56,23 +55,13 @@ def update(id):
     if not user.id == current_user.id:
         return render_template('edit.html', validation_errors=['Unauthorized!'], form=form)
 
-    print("-------> 1 ---->")
-
     user.username = form.username.data
-    print("-------> 2 ---->")
 
     user.email = form.email.data
 
-    print("-------> BEFORE ---->")
-    print(user.validation_errors)
-
     if len(user.validation_errors) > 0:
-        print("-------> IF ---->")
-        print(user.validation_errors)
         return render_template('edit.html', validation_errors=user.validation_errors, form=form)
     else:
-        print("-------> ELSE ---->")
-        print(user.validation_errors)
         db.session.add(user)
         db.session.commit()
         flash('Information updated!')

@@ -1,4 +1,5 @@
 import re
+from sqlalchemy import event
 from sqlalchemy.orm import validates
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -11,6 +12,17 @@ from instagram import db
 #         return User.query.get(user_id)
 #     except:
 #         return None
+
+# def validation_preparation(func):
+#     def wrapper(obj, key, value):
+#         try:
+#             obj.validation_errors
+#         except AttributeError:
+#             obj.validation_errors = []
+#         with db.session.no_autoflush:
+#             func(obj, key, value)
+
+#     return wrapper
 
 
 class User(db.Model, UserMixin):
@@ -32,6 +44,7 @@ class User(db.Model, UserMixin):
         return f"{self.username} with email {self.email} saved to database!"
 
     @validates('username')
+    # @validation_preparation
     def validate_username(self, key, username):
         try:
             self.validation_errors
@@ -52,41 +65,27 @@ class User(db.Model, UserMixin):
         return username
 
     @validates('email')
+    # @validation_preparation
     def validate_email(self, key, email):
         try:
             self.validation_errors
         except AttributeError:
             self.validation_errors = []
+        with db.session.no_autoflush:
+            if not email:
+                self.validation_errors.append('No email provided')
 
-        print("-------> 2a ---->")
+            if not re.match("[^@]+@[^@]+\.[^@]+", email):
+                self.validation_errors.append(
+                    'Provided email is not an email address')
 
-        if not email:
-            self.validation_errors.append('No email provided')
-
-        print("-------> 2b ---->")
-
-        if not re.match("[^@]+@[^@]+\.[^@]+", email):
-            self.validation_errors.append(
-                'Provided email is not an email address')
-
-        print("-------> 2c ---->")
-
-        if (not self.email == email):
-            print("-------> 2d ---->")
-
-            if User.query.filter_by(email=email).first():
-                print("-------> 2e ---->")
-
-                self.validation_errors.append('Email is already in use')
+            if (not self.email == email):
+                if User.query.filter_by(email=email).first():
+                    self.validation_errors.append('Email is already in use')
 
         return email
 
     def set_password(self, password):
-        try:
-            self.validation_errors
-        except AttributeError:
-            self.validation_errors = []
-
         if not password:
             self.validation_errors.append('Password not provided')
 
