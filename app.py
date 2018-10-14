@@ -150,7 +150,7 @@ def validation_preparation(func):
         except AttributeError:
             obj.validation_errors = []
 
-        func(obj, key, value)
+        return func(obj, key, value)
 
     return wrapper
 
