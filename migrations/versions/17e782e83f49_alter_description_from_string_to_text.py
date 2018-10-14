@@ -22,5 +22,5 @@ def upgrade():
 
 
 def downgrade():
-    op.alter_column('users', 'size', existing_type=sa.Text(),
+    op.alter_column('users', 'description', existing_type=sa.Text(),
                     type_=sa.String())

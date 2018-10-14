@@ -3,13 +3,10 @@ from flask import Flask, render_template, redirect, url_for, flash
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, login_required, logout_user
-
+import config
 
 app = Flask(__name__)
-
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_object(os.environ['APP_SETTINGS'])
 
 # https://stackoverflow.com/questions/38795414/flask-sqlalchemy-disable-autoflush-for-the-whole-session
 db = SQLAlchemy(app, session_options={"autoflush": False})

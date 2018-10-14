@@ -1,9 +1,10 @@
 import re
 from sqlalchemy import event
 from sqlalchemy.orm import validates
+from sqlalchemy.ext.hybrid import hybrid_property
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from instagram import db
+from instagram import db, app
 
 
 def validation_preparation(func):
@@ -26,6 +27,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(), index=True, nullable=False)
     description = db.Column(db.Text)
+    profile_picture = db.Column(db.String())
 
     def __init__(self, email, username, password):
         self.validation_errors = []
@@ -35,6 +37,10 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"{self.username} with email {self.email} saved to database!"
+
+    @hybrid_property
+    def profile_picture_url(self):
+        return f"{app.config['S3_LOCATION']}{self.profile_picture}"
 
     @validates('username')
     @validation_preparation
