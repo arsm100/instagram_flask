@@ -12,7 +12,7 @@ def validation_preparation(func):
             obj.validation_errors
         except AttributeError:
             obj.validation_errors = []
-        func(obj, key, value)
+        return func(obj, key, value)
 
     return wrapper
 
@@ -26,7 +26,6 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(), index=True, nullable=False)
     description = db.Column(db.String())
-    
 
     def __init__(self, email, username, password):
         self.validation_errors = []
