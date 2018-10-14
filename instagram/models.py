@@ -12,8 +12,7 @@ def validation_preparation(func):
             obj.validation_errors
         except AttributeError:
             obj.validation_errors = []
-        with db.session.no_autoflush:
-            func(obj, key, value)
+        func(obj, key, value)
 
     return wrapper
 

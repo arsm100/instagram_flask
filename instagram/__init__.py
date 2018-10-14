@@ -11,7 +11,9 @@ app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+# https://stackoverflow.com/questions/38795414/flask-sqlalchemy-disable-autoflush-for-the-whole-session
+db = SQLAlchemy(app, session_options={"autoflush": False})
+# db = SQLAlchemy(app)
 Migrate(app, db)
 
 login_manager = LoginManager()
