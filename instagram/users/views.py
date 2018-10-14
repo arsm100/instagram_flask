@@ -56,8 +56,8 @@ def update(id):
         return render_template('edit.html', validation_errors=['Unauthorized!'], form=form)
 
     user.username = form.username.data
-
     user.email = form.email.data
+    user.description = form.description.data
 
     if len(user.validation_errors) > 0:
         return render_template('edit.html', validation_errors=user.validation_errors, form=form)

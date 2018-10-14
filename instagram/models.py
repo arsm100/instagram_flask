@@ -25,7 +25,7 @@ class User(db.Model, UserMixin):
                          unique=True, nullable=False)
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(), index=True, nullable=False)
-    description = db.Column(db.String())
+    description = db.Column(db.Text)
 
     def __init__(self, email, username, password):
         self.validation_errors = []
