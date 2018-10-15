@@ -117,3 +117,10 @@ def upload_profile_image(id):
 
     else:
         return redirect("/")
+
+@users_blueprint.route('/search', methods=['POST'])
+def search():
+    username = request.form["username"]
+    user = User.query.filter_by(username=username).first()
+
+    return render_template('show.html', user=user)

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, TextAreaField, BooleanField
+from wtforms import StringField, SubmitField, PasswordField, TextAreaField, BooleanField, validators
 
 
 class NewUserForm(FlaskForm):
@@ -17,3 +17,8 @@ class EditUserForm(FlaskForm):
     description = TextAreaField('Description:')
     private = BooleanField('Make Private:')
     submit = SubmitField('Update Information')
+
+class SearchUserForm(FlaskForm):
+
+    username = StringField('Username:', [validators.InputRequired()])
+    submit = SubmitField('Search')
