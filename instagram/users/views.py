@@ -68,6 +68,7 @@ def update(id):
     user.username = form.username.data
     user.email = form.email.data
     user.description = form.description.data
+    user.private = form.private.data
 
     if len(user.validation_errors) > 0:
         return render_template('edit.html', validation_errors=user.validation_errors, form=form, user=user)
