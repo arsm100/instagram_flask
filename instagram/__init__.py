@@ -18,7 +18,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "sessions.sign_in"
 
-from instagram.models import User
+from instagram.users.model import User
 
 
 @login_manager.user_loader

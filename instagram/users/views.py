@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, login_required, current_user
-from instagram.models import User
+from instagram.users.model import User
 from instagram.users.forms import NewUserForm, EditUserForm
 from instagram import app, db
 from instagram.helpers import upload_file_to_s3, allowed_profile_images, delete_file_from_s3
@@ -55,14 +55,14 @@ def update(id):
 
     # Prevent unauthorized user from changing data of another user
     if not user.id == current_user.id:
-        return render_template('edit.html', validation_errors=['Unauthorized!'], form=form)
+        return render_template('edit.html', validation_errors=['Unauthorized!'], form=form, user=user)
 
     user.username = form.username.data
     user.email = form.email.data
     user.description = form.description.data
 
     if len(user.validation_errors) > 0:
-        return render_template('edit.html', validation_errors=user.validation_errors, form=form)
+        return render_template('edit.html', validation_errors=user.validation_errors, form=form, user=user)
     else:
         db.session.add(user)
         db.session.commit()
@@ -79,11 +79,11 @@ def upload_profile_image(id):
 
     # Prevent unauthorized user from changing data of another user
     if not user.id == current_user.id:
-        return render_template('edit.html', validation_errors=['Unauthorized!'], form=form)
+        return render_template('edit.html', validation_errors=['Unauthorized!'], form=form, user=user)
 
     if "profile_image" not in request.files:
         flash("No profile image")
-        return render_template('edit.html', validation_errors=[], form=form)
+        return render_template('edit.html', validation_errors=[], form=form, user=user)
 
     file = request.files["profile_image"]
 

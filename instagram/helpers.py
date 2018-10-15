@@ -51,3 +51,14 @@ def upload_file_to_s3(file, bucket_name, acl="public-read"):
 def allowed_profile_images(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ['jpg', 'png', 'jpeg']
+
+
+def validation_preparation(func):
+    def wrapper(obj, key, value):
+        try:
+            obj.validation_errors
+        except AttributeError:
+            obj.validation_errors = []
+        return func(obj, key, value)
+
+    return wrapper
