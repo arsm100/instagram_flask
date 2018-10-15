@@ -36,7 +36,15 @@ def create():
         db.session.commit()
         login_user(user)
         flash(f"Welcome {user.username}")
-        return redirect(url_for('users.edit', id=user.id))
+        return redirect(url_for('users.show', username=user.username))
+
+
+@users_blueprint.route('/<username>', methods=["GET"])
+def show(username):
+    user = User.query.filter_by(username=username).first()
+
+    if user:
+        return render_template('show.html', user=user)
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
@@ -67,7 +75,7 @@ def update(id):
         db.session.add(user)
         db.session.commit()
         flash('Information updated!')
-        return redirect(url_for('users.edit', id=user.id))
+        return redirect(url_for('users.show', username=user.username))
 
 
 @users_blueprint.route('/<id>/profile/image', methods=['POST'])
@@ -104,7 +112,7 @@ def upload_profile_image(id):
 
         flash("Profile Picture Updated!")
 
-        return redirect(url_for('users.edit', id=user.id))
+        return redirect(url_for('users.show', id=user.username))
 
     else:
         return redirect("/")

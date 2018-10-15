@@ -53,6 +53,11 @@ def allowed_profile_images(filename):
            filename.rsplit('.', 1)[1].lower() in ['jpg', 'png', 'jpeg']
 
 
+def allowed_images(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ['jpg', 'png', 'jpeg']
+
+
 def validation_preparation(func):
     def wrapper(obj, key, value):
         try:

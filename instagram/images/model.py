@@ -15,3 +15,11 @@ class Image(db.Model, UserMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
                         nullable=False)
     image_name = db.Column(db.String(), nullable=False)
+
+    def __init__(self, user_id, image_name):
+        self.user_id = user_id
+        self.image_name = image_name
+
+    @hybrid_property
+    def image_url(self):
+        return f"{app.config['S3_LOCATION']}{self.image_name}"

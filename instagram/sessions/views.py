@@ -19,7 +19,7 @@ def sign_in():
         if user and user.check_password(form.password.data):
             login_user(user)
             flash('You were successfully signed in')
-            return redirect(url_for('users.edit', id=user.id))
+            return redirect(url_for('users.show', username=user.username))
         else:
             flash('Wrong username/email')
 
