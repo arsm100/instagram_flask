@@ -18,6 +18,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(), index=True, nullable=False)
     description = db.Column(db.Text)
     profile_picture = db.Column(db.String())
+    images = db.relationship('Image', backref='user', lazy=True)
 
     def __init__(self, email, username, password):
         self.validation_errors = []
