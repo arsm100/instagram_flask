@@ -36,5 +36,9 @@
     </div>
   {% endif %}
 
+  {% if user.private %}
+    <p class="text-center font-italic">This profile is private</p>
+  {% endif %}
+
 </div>
 {% endblock %}

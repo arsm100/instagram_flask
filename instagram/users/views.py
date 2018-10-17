@@ -123,4 +123,4 @@ def search():
     username = request.form["username"]
     user = User.query.filter_by(username=username).first()
 
-    return render_template('show.html', user=user)
+    return redirect(url_for("users.show", username=user.username))
