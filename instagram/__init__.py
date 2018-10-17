@@ -4,6 +4,8 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 import config
+from flask_assets import Environment, Bundle
+from .util.assets import bundles
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
@@ -13,6 +15,9 @@ db = SQLAlchemy(app, session_options={"autoflush": False})
 # db = SQLAlchemy(app)
 
 Migrate(app, db)
+
+assets = Environment(app)
+assets.register(bundles)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
