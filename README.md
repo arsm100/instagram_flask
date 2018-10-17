@@ -3,6 +3,17 @@
 1. This application was built against Python 3.6
 2. Postgres 9.4 and above, running locally on port 5432
 
+## Environment Variables
+
+This project uses python-dotenv to autoload environment variables from `.env` files
+
+```
+FLASK_APP='app'
+FLASK_ENV='development'
+DATABASE_URL="postgres://localhost:5432/instagram"
+SECRET_KEY="secretkey"
+```
+
 ## To Setup
 
 ```bash
