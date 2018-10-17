@@ -113,7 +113,7 @@ def upload_profile_image(id):
 
         flash("Profile Picture Updated!")
 
-        return redirect(url_for('users.show', id=user.username))
+        return redirect(url_for('users.show', username=user.username))
 
     else:
         return redirect("/")
