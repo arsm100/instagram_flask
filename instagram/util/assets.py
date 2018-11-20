@@ -7,13 +7,13 @@ bundles = {
         'js/vendor/popper.js',
         'js/vendor/bootstrap.js',
         filters='jsmin',
-        output='gen/home.js'),
+        output='gen/home.%(version)s.js'),
 
     'home_css': Bundle(
         'css/vendor/bootstrap4.css',
         'css/user.css',
         filters='cssmin',
-        output='gen/home.css'),
+        output='gen/home.%(version)s.css'),
 
     # 'admin_js': Bundle(
     #     'js/lib/jquery-1.10.2.js',
