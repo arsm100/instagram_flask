@@ -44,7 +44,9 @@ def show(username):
     user = User.query.filter_by(username=username).first()
 
     if user:
-        return render_template('show.html', user=user)
+        allowed_to_view_profile = not user.private or \
+            (current_user.is_authenticated and current_user.id == user.id)
+        return render_template('show.html', user=user, allowed_to_view_profile=allowed_to_view_profile)
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
