@@ -6,7 +6,7 @@ from instagram import app
 
 sessions_blueprint = Blueprint('sessions',
                                __name__,
-                               template_folder='templates/sessions')
+                               template_folder='templates')
 
 
 @sessions_blueprint.route('/sign_in', methods=['GET', 'POST'])
@@ -23,7 +23,7 @@ def sign_in():
         else:
             flash('Wrong username/email')
 
-    return render_template('sign_in.html', form=form)
+    return render_template('sessions/sign_in.html', form=form)
 
 
 @sessions_blueprint.route('/sign_out', methods=['POST'])

@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 
 images_blueprint = Blueprint('images',
                              __name__,
-                             template_folder='templates/images')
+                             template_folder='templates')
 
 
 @images_blueprint.route('/', methods=['POST'])

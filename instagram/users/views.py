@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 
 users_blueprint = Blueprint('users',
                             __name__,
-                            template_folder='templates/users')
+                            template_folder='templates')
 
 
 @users_blueprint.route('/new', methods=['GET'])
@@ -18,7 +18,7 @@ def new():
         return redirect(url_for('users.edit', id=current_user.id))
 
     form = NewUserForm()
-    return render_template('new.html', form=form)
+    return render_template('users/new.html', form=form)
 
 
 @users_blueprint.route('/', methods=['POST'])
@@ -30,7 +30,7 @@ def create():
                 password=form.password.data)
 
     if len(user.validation_errors) > 0:
-        return render_template('new.html', validation_errors=user.validation_errors, form=form)
+        return render_template('users/new.html', validation_errors=user.validation_errors, form=form)
     else:
         db.session.add(user)
         db.session.commit()
@@ -46,14 +46,14 @@ def show(username):
     if user:
         allowed_to_view_profile = not user.private or \
             (current_user.is_authenticated and current_user.id == user.id)
-        return render_template('show.html', user=user, allowed_to_view_profile=allowed_to_view_profile)
+        return render_template('users/show.html', user=user, allowed_to_view_profile=allowed_to_view_profile)
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
 @login_required
 def edit(id):
     edit_user_form = EditUserForm(obj=current_user)
-    return render_template('edit.html', user=current_user, form=edit_user_form)
+    return render_template('users/edit.html', user=current_user, form=edit_user_form)
 
 
 @users_blueprint.route('/<id>', methods=['POST'])
@@ -65,7 +65,7 @@ def update(id):
 
     # Prevent unauthorized user from changing data of another user
     if not user.id == current_user.id:
-        return render_template('edit.html', validation_errors=['Unauthorized!'], form=form, user=user)
+        return render_template('users/edit.html', validation_errors=['Unauthorized!'], form=form, user=user)
 
     user.username = form.username.data
     user.email = form.email.data
@@ -73,7 +73,7 @@ def update(id):
     user.private = form.private.data
 
     if len(user.validation_errors) > 0:
-        return render_template('edit.html', validation_errors=user.validation_errors, form=form, user=user)
+        return render_template('users/edit.html', validation_errors=user.validation_errors, form=form, user=user)
     else:
         db.session.add(user)
         db.session.commit()
@@ -90,17 +90,17 @@ def upload_profile_image(id):
 
     # Prevent unauthorized user from changing data of another user
     if not user.id == current_user.id:
-        return render_template('edit.html', validation_errors=['Unauthorized!'], form=form, user=user)
+        return render_template('users/edit.html', validation_errors=['Unauthorized!'], form=form, user=user)
 
     if "profile_image" not in request.files:
         flash("No profile image")
-        return render_template('edit.html', validation_errors=[], form=form, user=user)
+        return render_template('users/edit.html', validation_errors=[], form=form, user=user)
 
     file = request.files["profile_image"]
 
     if file.filename == "":
         flash("Please select a file")
-        return render_template('edit.html', form=form)
+        return render_template('users/edit.html', form=form)
 
     if file and allowed_profile_images(file.filename):
         old_filename = user.profile_picture
