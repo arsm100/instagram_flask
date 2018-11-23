@@ -1,12 +1,12 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user
-from instagram.users.model import User
-from instagram.sessions.forms import SignInForm
+from instagram.blueprints.users.model import User
+from instagram.blueprints.sessions.forms import SignInForm
 from instagram import app
 
 sessions_blueprint = Blueprint('sessions',
                                __name__,
-                               template_folder='templates/sessions')
+                               template_folder='templates')
 
 
 @sessions_blueprint.route('/sign_in', methods=['GET', 'POST'])
@@ -23,7 +23,7 @@ def sign_in():
         else:
             flash('Wrong username/email')
 
-    return render_template('sign_in.html', form=form)
+    return render_template('sessions/new.html', form=form)
 
 
 @sessions_blueprint.route('/sign_out', methods=['POST'])

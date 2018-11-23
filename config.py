@@ -26,7 +26,7 @@ class StagingConfig(Config):
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
-
+    EXPLAIN_TEMPLATE_LOADING = True
 
 class TestingConfig(Config):
     TESTING = True
