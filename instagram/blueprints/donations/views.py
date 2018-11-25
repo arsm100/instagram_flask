@@ -5,7 +5,7 @@ from instagram.blueprints.images.model import Image
 from instagram.blueprints.donations.model import Donation
 from instagram import app, db
 from instagram.helpers.braintree import gateway
-
+from instagram.helpers.email import send_email
 
 donations_blueprint = Blueprint('donations',
                              __name__,
@@ -15,6 +15,12 @@ donations_blueprint = Blueprint('donations',
 @donations_blueprint.route('/', methods=['POST'])
 @login_required
 def create():
+    image = Image.query.get(request.form['image_id'])
+
+    if not image:
+        flash('Invalid image')
+        return redirect(request.referrer)
+
     nonce_from_the_client = request.form["payment_method_nonce"]
 
     result = gateway.transaction.sale({
@@ -30,6 +36,9 @@ def create():
 
         db.session.add(donation)
         db.session.commit()
+
+        send_email(from_email="instagram@nextacademy.com", to_email=image.user.email, subject="You've received a donation", content=f"Someone liked your picture and donated USD {donation.amount} to you.")
+
         flash(f"Your donation of {donation.amount} has been successfully sent!")
         return redirect(request.referrer)
     else:

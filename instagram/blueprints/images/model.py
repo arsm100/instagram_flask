@@ -12,8 +12,7 @@ class Image(db.Model, UserMixin):
     __tablename__ = 'images'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
-                        nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'),nullable=False)
     image_name = db.Column(db.String(), nullable=False)
 
     def __init__(self, user_id, image_name):

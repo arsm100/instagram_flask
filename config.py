@@ -12,6 +12,10 @@ class Config(object):
     S3_SECRET = os.environ['S3_SECRET']
     S3_BUCKET = os.environ['S3_BUCKET']
     S3_LOCATION = f"http://{S3_BUCKET}.s3.amazonaws.com/"
+    MERCHANT_ID=os.environ['BRAINTREE_MERCHANT_ID']
+    PUBLIC_KEY=os.environ['BRAINTREE_PUBLIC_KEY']
+    PRIVATE_KEY=os.environ['BRAINTREE_PRIVATE_KEY']
+    SENDGRID_API_KEY=os.environ['SENDGRID_API_KEY']
 
 
 class ProductionConfig(Config):
@@ -26,9 +30,6 @@ class StagingConfig(Config):
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
-    MERCHANT_ID=os.environ['BRAINTREE_MERCHANT_ID']
-    PUBLIC_KEY=os.environ['BRAINTREE_PUBLIC_KEY']
-    PRIVATE_KEY=os.environ['BRAINTREE_PRIVATE_KEY']
 
 class TestingConfig(Config):
     TESTING = True
