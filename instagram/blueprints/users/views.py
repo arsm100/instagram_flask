@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, login_required, current_user
-from instagram.users.model import User
-from instagram.users.forms import NewUserForm, EditUserForm
+from instagram.blueprints.users.model import User
+from instagram.blueprints.users.forms import NewUserForm, EditUserForm
 from instagram import app, db
-from instagram.helpers import upload_file_to_s3, allowed_profile_images, delete_file_from_s3
+from instagram.helpers.image_uploader import upload_file_to_s3, allowed_profile_images, delete_file_from_s3
 from werkzeug.utils import secure_filename
+from instagram.helpers.braintree import gateway
 
 
 users_blueprint = Blueprint('users',
@@ -44,9 +45,11 @@ def show(username):
     user = User.query.filter_by(username=username).first()
 
     if user:
+        client_token = gateway.client_token.generate()
+
         allowed_to_view_profile = not user.private or \
             (current_user.is_authenticated and current_user.id == user.id)
-        return render_template('show.html', user=user, allowed_to_view_profile=allowed_to_view_profile)
+        return render_template('show.html', user=user, allowed_to_view_profile=allowed_to_view_profile, client_token=client_token)
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])

@@ -1,0 +1,108 @@
+{% extends "_base.html" %}
+{% block title %}{{user.username}} | {% endblock %}
+{% block header %}
+  <script src="https://js.braintreegateway.com/web/dropin/1.14.1/js/dropin.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row mb-5">
+    <div class="col-3">
+      <img src="{{user.profile_picture_url}}" alt="{{user.username}} profile picture" class="img-fluid profile-picture-show" />
+    </div>
+    <div class="col-6">
+      <h2>{{user.username}}</h2>
+      <p>{{user.description}}</p>
+    </div>
+    <div class="col-3">
+      {% if current_user.id == user.id %}
+        <form action={{url_for("images.create")}} method="POST" enctype="multipart/form-data">
+          <input type="file" name="image">
+          <button class="btn btn-primary" type="submit">Post</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if user.images | length > 0 and allowed_to_view_profile %}
+    <div class="row">
+      {% for image in user.images %}
+        <div class="col-4 mb-2">
+          <img src="{{image.image_url}}" alt="{{image.image_name}}"  class="img-fluid feed-picture"/>
+
+          {% if current_user.id == user.id %}
+            <form action="{{url_for('images.destroy', id=image.id)}}" onSubmit="return confirm('Are you sure you wish to delete?');" method="POST">
+                <input type='submit' value='Delete' class='btn'/>
+            </form>
+          {% endif %}
+
+          {% if current_user.id != user.id %}
+            <button class="donate btn btn-primary" type="button" value="{{image.id}}" onClick="startDonation(this)">Donate</button>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+
+  <div class="modal fade" id="creditCardFormModal" tabindex="-1" role="dialog" aria-labelledby="creditCardFormModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="creditCardFormModalLabel">Key in Your Credit Card Information</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="creditCardForm" class="modal-body">
+            <form id="donationForm" action="{{url_for('donations.create')}}" method="POST">
+              <input type="hidden" name="image_id" />
+              <div class="form-group">
+                <label for='amount'>How much would you like to donate?</label>
+                <input class="form-control" type='tel' name='amount' min="1" placeholder="5"/>
+              </div>
+              <input type="hidden" id="nonce" name="payment_method_nonce" />
+              <div class="bt-drop-in-wrapper">
+                <div id="bt-dropin"></div>
+              </div>
+              <button class="button" type="submit" id="submit-button"><span>Confirm Donation</span></button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var donationForm = document.querySelector('#donationForm');
+
+    function startDonation(button) {
+      const imageId = button.value
+      donationForm.elements["image_id"].value = imageId
+      $('#creditCardFormModal').modal()
+    }
+
+    var client_token = '{{ client_token }}';
+
+    braintree.dropin.create({
+      authorization: client_token,
+      container: '#bt-dropin'
+    }, function (createErr, instance) {
+      donationForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        instance.requestPaymentMethod(function (err, payload) {
+          if (err) {
+            console.log('Error', err);
+            return;
+          }
+          // Add the nonce to the form and submit
+          document.querySelector('#nonce').value = payload.nonce;
+          donationForm.submit();
+        });
+      });
+    });
+  </script>
+
+  {% if user.private %}
+    <p class="text-center font-italic">This profile is private</p>
+  {% endif %}
+
+</div>
+{% endblock %}

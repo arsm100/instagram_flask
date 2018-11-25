@@ -5,7 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from instagram import db, app
-from instagram.helpers import validation_preparation
+from instagram.helpers.utils import validation_preparation
 
 
 class Image(db.Model, UserMixin):

@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 import config
 
+
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 
@@ -18,8 +19,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "sessions.sign_in"
 
-from instagram.users.model import User
-from instagram.images.model import Image
+from instagram.blueprints.users.model import User
+from instagram.blueprints.images.model import Image
+from instagram.blueprints.donations.model import Donation
 
 
 @login_manager.user_loader
@@ -41,10 +43,12 @@ def home():
 # NOTE! These imports need to come after you've defined db, otherwise you will
 # get errors in your models.py files.
 # Grab the blueprints from the other views.py files for each "app"
-from instagram.users.views import users_blueprint
-from instagram.sessions.views import sessions_blueprint
-from instagram.images.views import images_blueprint
+from instagram.blueprints.users.views import users_blueprint
+from instagram.blueprints.sessions.views import sessions_blueprint
+from instagram.blueprints.images.views import images_blueprint
+from instagram.blueprints.donations.views import donations_blueprint
 
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix='/')
 app.register_blueprint(images_blueprint, url_prefix='/images')
+app.register_blueprint(donations_blueprint, url_prefix='/donations')

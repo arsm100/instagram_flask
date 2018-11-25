@@ -26,7 +26,9 @@ class StagingConfig(Config):
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
-
+    MERCHANT_ID=os.environ['BRAINTREE_MERCHANT_ID']
+    PUBLIC_KEY=os.environ['BRAINTREE_PUBLIC_KEY']
+    PRIVATE_KEY=os.environ['BRAINTREE_PRIVATE_KEY']
 
 class TestingConfig(Config):
     TESTING = True

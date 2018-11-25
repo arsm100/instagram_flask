@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user
-from instagram.users.model import User
-from instagram.sessions.forms import SignInForm
+from instagram.blueprints.users.model import User
+from instagram.blueprints.sessions.forms import SignInForm
 from instagram import app
 
 sessions_blueprint = Blueprint('sessions',
