@@ -16,7 +16,8 @@ class Config(object):
     PUBLIC_KEY=os.environ['BRAINTREE_PUBLIC_KEY']
     PRIVATE_KEY=os.environ['BRAINTREE_PRIVATE_KEY']
     SENDGRID_API_KEY=os.environ['SENDGRID_API_KEY']
-
+    GOOGLE_CLIENT_ID=os.environ['GOOGLE_CLIENT_ID']
+    GOOGLE_CLIENT_SECRET=os.environ['GOOGLE_CLIENT_SECRET']
 
 class ProductionConfig(Config):
     DEBUG = False

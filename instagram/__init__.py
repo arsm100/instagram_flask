@@ -3,11 +3,13 @@ from flask import Flask, render_template, redirect, url_for, flash
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
+from instagram.helpers.google_oauth import oauth
 import config
 
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
+oauth.init_app(app)
 
 # https://stackoverflow.com/questions/38795414/flask-sqlalchemy-disable-autoflush-for-the-whole-session
 db = SQLAlchemy(app, session_options={"autoflush": False})
