@@ -32,7 +32,10 @@ class User(db.Model, UserMixin):
 
     @hybrid_property
     def profile_picture_url(self):
-        return f"{app.config['S3_LOCATION']}{self.profile_picture}"
+        if self.profile_picture:
+            return f"{app.config['S3_LOCATION']}{self.profile_picture}"
+        else:
+            return f"{app.config['S3_LOCATION']}profile-placeholder.jpg"
 
     @validates('username')
     @validation_preparation
