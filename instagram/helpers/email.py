@@ -18,4 +18,4 @@ def send_email(from_email, to_email, subject, content):
     # print(response.body)
     # print(response.headers)
 
-    return str(response.status_code) = '202':
+    return str(response.status_code) == '202'
