@@ -107,6 +107,8 @@ def upload_profile_image(id):
 
     if file and allowed_profile_images(file.filename):
         old_filename = user.profile_picture
+        delete_file_from_s3(old_filename, app.config["S3_BUCKET"])
+
         file.filename = secure_filename(user.username + "-" + file.filename)
         output = upload_file_to_s3(file, app.config["S3_BUCKET"])
         user.profile_picture = file.filename
@@ -114,7 +116,6 @@ def upload_profile_image(id):
         db.session.add(user)
         db.session.commit()
 
-        delete_file_from_s3(old_filename, app.config["S3_BUCKET"])
 
         flash("Profile Picture Updated!")
 

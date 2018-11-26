@@ -6,7 +6,8 @@
     <div class="row justify-content-center">
       {% for image in feed_images %}
         <div class="col-6 border-0 pb-5">
-          <img src="{{image.image_url}}" alt="{{image.image_name}}"  class="rounded  w-100"/>
+          <img src="{{image.image_url}}" alt="{{image.image_name}}"  class="rounded w-100"/>
+          <img src="{{image.user.profile_picture_url}}" class="img-feed-thumbnail rounded-circle" />
           <a href={{url_for("users.show", username=image.user.username)}} class="font-weight-bold">{{image.user.username}}</a>
         </div>
         <div class="w-100"></div>
