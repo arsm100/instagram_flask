@@ -1,11 +1,18 @@
 import re
-from sqlalchemy import event
+from sqlalchemy import event#, Table, Column, Integer, ForeignKey, UniqueConstraint, Index
 from sqlalchemy.orm import validates
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from instagram import db, app
 from instagram.helpers.utils import validation_preparation
+
+
+following_table = db.Table('followings', db.Model.metadata,
+    db.Column('idol_id', db.Integer, db.ForeignKey('users.id'), index=True),
+    db.Column('fan_id', db.Integer, db.ForeignKey('users.id'), index=True),
+    db.Index('ix_unique_idol_fan', 'idol_id', 'fan_id', unique=True)
+)
 
 
 class User(db.Model, UserMixin):
@@ -21,14 +28,39 @@ class User(db.Model, UserMixin):
     images = db.relationship('Image', backref='user', lazy=True)
     private = db.Column(db.Boolean)
 
+
+    #### DEFINING SELF REFERENTIAL MANY-TO-MANY RELATIONSHIP ####
+    #### OPTION 1 ####
+    ### Prefer this for beginners since it's more explicit
+    fans = db.relationship("User",
+                        secondary=following_table,
+                        primaryjoin=id==following_table.c.idol_id,
+                        secondaryjoin=id==following_table.c.fan_id
+    )
+    idols = db.relationship("User",
+                    secondary=following_table,
+                    primaryjoin=id==following_table.c.fan_id,
+                    secondaryjoin=id==following_table.c.idol_id
+    )
+
+    #### OPTION 2 ####
+    # fans = db.relationship("User",
+    #                     secondary=following_table,
+    #                     primaryjoin=id==following_table.c.idol_id,
+    #                     secondaryjoin=id==following_table.c.fan_id,
+    #                     backref = db.backref('idols')
+    # )
+
+
+
     def __init__(self, email, username, password):
         self.validation_errors = []
         self.email = email
         self.username = username
-        self.set_password(password)
+        self.password_hash = password
 
     def __repr__(self):
-        return f"{self.username} with email {self.email} saved to database!"
+        return f"{self.id} -> {self.username} with email {self.email} saved to database!"
 
     @hybrid_property
     def profile_picture_url(self):
@@ -69,6 +101,8 @@ class User(db.Model, UserMixin):
 
         return email
 
+    @validates('password_hash')
+    @validation_preparation
     def set_password(self, password):
         if not password:
             self.validation_errors.append('Password not provided')
@@ -81,7 +115,31 @@ class User(db.Model, UserMixin):
             self.validation_errors.append(
                 'Password must be between 8 and 50 characters')
 
-        self.password_hash = generate_password_hash(password)
+        return generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def follow(self, user):
+        if self == user:
+            return False # cannot follow self
+
+        if user in self.idols:
+            return False # already following
+
+        self.idols.append(user)
+        db.session.add(self)
+        db.session.commit()
+        return True
+
+    def unfollow(self, user):
+        if self == user:
+            return False
+
+        if not user in self.idols:
+            return False # not yet following, can't unfollow
+
+        self.idols.remove(user)
+        db.session.add(self)
+        db.session.commit()
+        return True
