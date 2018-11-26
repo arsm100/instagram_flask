@@ -52,4 +52,4 @@ def sign_in():
 def sign_out():
     logout_user()
     flash('You were successfully signed out')
-    return redirect(url_for('users.new'))
+    return redirect(url_for('sessions.sign_in'))
