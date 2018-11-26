@@ -37,7 +37,7 @@ def load_user(user_id):
 @app.route("/")
 def home():
     if current_user.is_authenticated:
-        return redirect(url_for("users.show", username=current_user.username))
+        return redirect(url_for("feed.index"))
     else:
         return redirect(url_for("sessions.sign_in"))
 
