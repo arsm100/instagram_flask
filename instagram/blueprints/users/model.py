@@ -6,11 +6,11 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from instagram import db, app
 from instagram.helpers.utils import validation_preparation
-
+from instagram.blueprints.images.model import Image
 
 following_table = db.Table('followings', db.Model.metadata,
-    db.Column('idol_id', db.Integer, db.ForeignKey('users.id'), index=True),
-    db.Column('fan_id', db.Integer, db.ForeignKey('users.id'), index=True),
+    db.Column('idol_id', db.Integer, db.ForeignKey('users.id'), index=True, nullable=False),
+    db.Column('fan_id', db.Integer, db.ForeignKey('users.id'), index=True, nullable=False),
     db.Index('ix_unique_idol_fan', 'idol_id', 'fan_id', unique=True)
 )
 
@@ -51,6 +51,13 @@ class User(db.Model, UserMixin):
     #                     backref = db.backref('idols')
     # )
 
+    feed_images = db.relationship(Image,
+                    secondary=following_table,
+                    primaryjoin=id==following_table.c.fan_id,
+                    secondaryjoin=following_table.c.idol_id==Image.user_id,
+                    order_by="desc(Image.id)" # latest images first
+    )
+
 
 
     def __init__(self, email, username, password):
@@ -60,7 +67,7 @@ class User(db.Model, UserMixin):
         self.password_hash = password
 
     def __repr__(self):
-        return f"{self.id} -> {self.username} with email {self.email} saved to database!"
+        return f"ID: {self.id} Username: {self.username} Email: {self.email}"
 
     @hybrid_property
     def profile_picture_url(self):
@@ -103,7 +110,7 @@ class User(db.Model, UserMixin):
 
     @validates('password_hash')
     @validation_preparation
-    def set_password(self, password):
+    def set_password(self, key, password):
         if not password:
             self.validation_errors.append('Password not provided')
 

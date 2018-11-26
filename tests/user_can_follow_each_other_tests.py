@@ -1,14 +1,16 @@
-from instagram import app
+from instagram import app, db
 from instagram.blueprints.users.model import User
 
 fan_id = 10
 idol_id = 20
+idol2_id = 11
 
 def test_prep():
     fan = User.query.get(fan_id)
     idol = User.query.get(idol_id)
-    print("fan: " + str(fan))
-    print("idol: " + str(idol))
+    idol2 = User.query.get(idol2_id)
+
+    print(fan)
 
     try:
         fan.unfollow(idol)
@@ -16,18 +18,12 @@ def test_prep():
         print("not idol")
 
     try:
-        idol.unfollow(fan)
+        fan.unfollow(idol2)
     except:
         print("not idol")
 
-    print("-----> fan fans")
-    print(fan.fans)
-    print("-----> fan idol")
+    print("-----> fan's idols")
     print(fan.idols)
-    print("-----> idol fans")
-    print(idol.fans)
-    print("-----> idol idol")
-    print(idol.idols)
     print("\n")
 
 
@@ -38,7 +34,7 @@ def test():
 
     fan = User.query.get(fan_id)
     idol = User.query.get(idol_id)
-
+    idol2 = User.query.get(idol2_id)
     # Testing
     print("Idol should be in fan's idols list")
     fan.follow(idol)
@@ -65,3 +61,17 @@ def test():
     print("Should not be able to unfollow someone you haven't followed")
     print(not idol.unfollow(fan))
     print("\n")
+
+
+    print("Idol2 should be in fan's idols list")
+    fan.follow(idol2)
+    print(idol2 in fan.idols)
+    print("\n")
+
+    print("Fan should be in idol2's fans list")
+    print(fan in idol2.fans)
+    print("\n")
+
+    print(idol.images)
+    print(idol2.images)
+    print(fan.feed_images)
