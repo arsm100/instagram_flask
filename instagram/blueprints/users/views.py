@@ -49,7 +49,9 @@ def show(username):
 
         allowed_to_view_profile = not user.private or \
             (current_user.is_authenticated and current_user.id == user.id)
-        return render_template('show.html', user=user, allowed_to_view_profile=allowed_to_view_profile, client_token=client_token)
+
+        images = user.images
+        return render_template('show.html', user=user, allowed_to_view_profile=allowed_to_view_profile, client_token=client_token, images=images)
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])

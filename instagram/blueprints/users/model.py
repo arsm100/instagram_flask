@@ -25,7 +25,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(), index=True, nullable=False)
     description = db.Column(db.Text)
     profile_picture = db.Column(db.String())
-    images = db.relationship('Image', backref='user', lazy=True)
+    images = db.relationship('Image', backref='user', lazy=True, order_by="desc(Image.id)")
     private = db.Column(db.Boolean)
 
 

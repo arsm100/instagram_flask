@@ -36,7 +36,7 @@
     </div>
   </div>
 
-  {% if user.images | length > 0 and allowed_to_view_profile %}
+  {% if images | length > 0 and allowed_to_view_profile %}
     <div class="row">
       {% for image in user.images %}
         <div class="col-4 mb-2">
