@@ -50,9 +50,11 @@ from instagram.blueprints.sessions.views import sessions_blueprint
 from instagram.blueprints.images.views import images_blueprint
 from instagram.blueprints.donations.views import donations_blueprint
 from instagram.blueprints.feed.views import feed_blueprint
+from instagram.blueprints.followings.views import followings_blueprint
 
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix='/')
 app.register_blueprint(images_blueprint, url_prefix='/images')
 app.register_blueprint(donations_blueprint, url_prefix='/donations')
 app.register_blueprint(feed_blueprint, url_prefix='/feed')
+app.register_blueprint(followings_blueprint, url_prefix='/follow')

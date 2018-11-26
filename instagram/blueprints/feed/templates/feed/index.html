@@ -1,13 +1,15 @@
 {% extends "_base.html" %}
 {% block title %} Feed {% endblock %}
 {% block content %}
-<div class="container">
+<div class="container mt-5">
   {% if feed_images | length > 0 %}
-    <div class="row">
+    <div class="row justify-content-center">
       {% for image in feed_images %}
-        <div class="col-4 mb-2">
-          <img src="{{image.image_url}}" alt="{{image.image_name}}"  class="img-fluid feed-picture"/>
+        <div class="col-6 border-0 pb-5">
+          <img src="{{image.image_url}}" alt="{{image.image_name}}"  class="rounded img-fluid"/>
+          <a href={{url_for("users.show", username=image.user.username)}} class="font-weight-bold">{{image.user.username}}</a>
         </div>
+        <div class="w-100"></div>
       {% endfor %}
     </div>
   {% endif %}
