@@ -129,6 +129,6 @@ def upload_profile_image(id):
 @users_blueprint.route('/search', methods=['POST'])
 def search():
     username = request.form["username"]
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter(User.username.ilike(f'%{username}%')).first()
 
     return redirect(url_for("users.show", username=user.username))
