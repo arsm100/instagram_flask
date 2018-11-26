@@ -40,7 +40,7 @@ def sign_in():
         if user and user.check_password(form.password.data):
             login_user(user)
             flash('You were successfully signed in')
-            return redirect(url_for('users.show', username=user.username))
+            return redirect(url_for('feed.index'))
         else:
             flash('Wrong username/email')
 
