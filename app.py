@@ -1,6 +1,6 @@
 from instagram import app
 from flask import render_template
-import test
+from tests import user_can_follow_each_other # for testing
 
 @app.errorhandler(500)
 def internal_server_error(e):
