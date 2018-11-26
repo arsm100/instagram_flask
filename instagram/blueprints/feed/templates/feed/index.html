@@ -6,12 +6,14 @@
     <div class="row justify-content-center">
       {% for image in feed_images %}
         <div class="col-6 border-0 pb-5">
-          <img src="{{image.image_url}}" alt="{{image.image_name}}"  class="rounded img-fluid"/>
+          <img src="{{image.image_url}}" alt="{{image.image_name}}"  class="rounded  w-100"/>
           <a href={{url_for("users.show", username=image.user.username)}} class="font-weight-bold">{{image.user.username}}</a>
         </div>
         <div class="w-100"></div>
       {% endfor %}
     </div>
+  {% else %}
+    <p>No Images</p>
   {% endif %}
 </div>
 {% endblock %}

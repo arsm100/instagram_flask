@@ -11,13 +11,15 @@
     </div>
     <div class="col-6">
       <h2>{{user.username}}</h2>
-      <p>{{user.description}}</p>
+      <p>{{user.description | default("", true)}}</p>
     </div>
     <div class="col-3">
       {% if current_user.id == user.id %}
         <form action={{url_for("images.create")}} method="POST" enctype="multipart/form-data">
-          <input type="file" name="image">
-          <button class="btn btn-primary" type="submit">Post</button>
+          <div class="form-group">
+            <input class="form-control-file" type="file" name="image">
+          </div>
+          <button class="btn btn-primary" type="submit">Post Image</button>
         </form>
       {% endif %}
 
@@ -42,7 +44,7 @@
 
           {% if current_user.id == user.id %}
             <form action="{{url_for('images.destroy', id=image.id)}}" onSubmit="return confirm('Are you sure you wish to delete?');" method="POST">
-                <input type='submit' value='Delete' class='btn'/>
+                <input type='submit' value='Delete' class='btn btn-outline-danger'/>
             </form>
           {% endif %}
 
