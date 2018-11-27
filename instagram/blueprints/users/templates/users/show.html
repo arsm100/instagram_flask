@@ -25,12 +25,12 @@
 
       {% if not current_user.id == user.id and (user in current_user.follow_requests) %}
         <span class="badge badge-secondary">Requested</span>
-      {% elif not current_user.id == user.id and (not user in current_user.idols) %}
+      {% elif current_user.is_authenticated and not current_user.id == user.id and (not user in current_user.idols) %}
         <form action={{url_for("followings.create")}} method="POST">
           <input type="hidden" name="idol_id" value="{{user.id}}" />
           <button class="btn btn-primary float-right" type="submit">Follow</button>
         </form>
-      {% elif not current_user.id == user.id %}
+      {% elif current_user.is_authenticated and not current_user.id == user.id %}
         <form action={{url_for("followings.destroy", idol_id=user.id)}} method="POST">
           <button class="btn btn-secondary float-right" type="submit">Unfollow</button>
         </form>
