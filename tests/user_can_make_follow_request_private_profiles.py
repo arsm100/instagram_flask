@@ -3,7 +3,10 @@ from models.user_following import UserFollowing
 from models.user import User
 
 fan_id = 2
-idol_id = User.query.filter_by(private=True).first().id
+try:
+    idol_id = User.query.filter_by(private=True).first().id
+except:
+    print(no idol)
 
 def test_prep():
     if not idol_id:
