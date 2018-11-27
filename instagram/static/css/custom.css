@@ -4,6 +4,10 @@
   height: 250px;
 }
 
+.profile-picture-edit {
+  width: 100%;
+}
+
 .img-feed-thumbnail {
   padding: 0.25rem;
   background-color: #fff;
