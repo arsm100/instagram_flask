@@ -6,7 +6,7 @@ fan_id = 2
 try:
     idol_id = User.query.filter_by(private=True).first().id
 except:
-    print(no idol)
+    print("no idol")
 
 def test_prep():
     if not idol_id:
