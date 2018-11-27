@@ -44,7 +44,7 @@ def home():
     if current_user.is_authenticated:
         return redirect(url_for("feed.index"))
     else:
-        return redirect(url_for("sessions.sign_in"))
+        return redirect(url_for("users.index"))
 
 
 # NOTE! These imports need to come after you've defined db, otherwise you will
