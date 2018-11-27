@@ -38,7 +38,7 @@ def test_follow():
     # Testing
     print("Idol should be in fan's idols list")
     fan.follow(idol)
-    print(idol in fan.idols)
+    assert idol in fan.idols, "Idol should be in fan's idols list"
     print("-----> Fan's fans")
     print(fan.fans)
     print("-----> Fan's idol")
@@ -74,4 +74,4 @@ def test_follow():
 
     print(idol.images)
     print(idol2.images)
-    print(fan.feed_images)
+    print(fan.images_feed)

@@ -1,5 +1,5 @@
 from instagram import app, db
-from models.follower_request import FollowerRequest
+from models.user_following import UserFollowing
 from models.user import User
 
 fan_id = 2
@@ -8,7 +8,7 @@ idol_id = User.query.filter_by(private=True).first().id
 def test_prep():
     if not idol_id:
         raise BaseException("No private users")
-    FollowerRequest.query.delete()
+    UserFollowing.query.delete()
 
 @app.cli.command('request')
 def test_request():
@@ -33,8 +33,8 @@ def test_request():
     print(idol in fan.follow_requests)
     print("\n")
 
-    print("fan should be in idol's follower_requests list")
+    print("fan should be in idol's fan_requests list")
     test_prep()
     fan.follow(idol)
-    print(fan in idol.follower_requests)
+    print(fan in idol.fan_requests)
     print("\n")

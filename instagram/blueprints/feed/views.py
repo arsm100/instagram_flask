@@ -13,6 +13,6 @@ def index():
         flash("Sign in first")
         return redirect(url_for('sessions.sign_in'))
 
-    feed_images = current_user.feed_images
+    images_feed = current_user.images_feed
 
-    return render_template('feed/index.html', feed_images=feed_images)
+    return render_template('feed/index.html', images_feed=images_feed)

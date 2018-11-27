@@ -7,14 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from instagram import db, app
 from instagram.helpers.utils import validation_preparation
 from models.image import Image
-from models.follower_request import FollowerRequest
-
-following_table = db.Table('followings', db.Model.metadata,
-    db.Column('idol_id', db.Integer, db.ForeignKey('users.id'), index=True, nullable=False),
-    db.Column('fan_id', db.Integer, db.ForeignKey('users.id'), index=True, nullable=False),
-    db.Index('ix_unique_idol_fan', 'idol_id', 'fan_id', unique=True)
-)
-
+from models.user_following import UserFollowing
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -34,42 +27,62 @@ class User(db.Model, UserMixin):
     #### OPTION 1 ####
     ### Prefer this for beginners since it's more explicit
     fans = db.relationship("User",
-                        secondary=following_table,
-                        primaryjoin=id==following_table.c.idol_id,
-                        secondaryjoin=id==following_table.c.fan_id
+                        secondary='user_followings',
+                        primaryjoin="and_(User.id == foreign(UserFollowing.idol_id), "
+                                "UserFollowing.approved.op('=')(True))",
+                        secondaryjoin=id==db.foreign(UserFollowing.fan_id)
     )
     idols = db.relationship("User",
-                    secondary=following_table,
-                    primaryjoin=id==following_table.c.fan_id,
-                    secondaryjoin=id==following_table.c.idol_id
+                        secondary='user_followings',
+                        primaryjoin="and_(User.id == foreign(UserFollowing.fan_id), "
+                                "UserFollowing.approved.op('=')(True))",
+                        secondaryjoin=id==db.foreign(UserFollowing.idol_id)
     )
 
     #### OPTION 2 ####
     # fans = db.relationship("User",
-    #                     secondary=following_table,
-    #                     primaryjoin=id==following_table.c.idol_id,
-    #                     secondaryjoin=id==following_table.c.fan_id,
+    #                     secondary='user_followings',
+    #                     primaryjoin="and_(User.id == foreign(UserFollowing.idol_id), "
+    #                             "UserFollowing.approved.op('=')(True))",
+    #                     secondaryjoin=id==db.foreign(UserFollowing.fan_id),
     #                     backref = db.backref('idols')
     # )
 
-    follow_requests = db.relationship("User",
-                    secondary='follower_requests',
-                    primaryjoin=id==FollowerRequest.fan_id,
-                    secondaryjoin=id==FollowerRequest.idol_id
-    )
-
-    follower_requests = db.relationship("User",
-                    secondary='follower_requests',
-                    primaryjoin=id==db.foreign(FollowerRequest.idol_id),
-                    secondaryjoin=id==db.foreign(FollowerRequest.fan_id)
-    )
-
-    feed_images = db.relationship(Image,
-                    secondary=following_table,
-                    primaryjoin=id==following_table.c.fan_id,
-                    secondaryjoin=following_table.c.idol_id==Image.user_id,
+    images_feed = db.relationship(Image,
+                    secondary='user_followings',
+                    primaryjoin="and_(User.id == foreign(UserFollowing.fan_id), "
+                                "UserFollowing.approved.op('=')(True))",
+                    secondaryjoin=UserFollowing.idol_id==db.foreign(Image.user_id),
                     order_by="desc(Image.id)" # latest images first
     )
+
+    # follow_requests = db.relationship("User",
+    #                 secondary='user_followings',
+    #                 primaryjoin=id==FollowerRequest.fan_id,
+    #                 secondaryjoin=id==FollowerRequest.idol_id
+    # )
+
+    # follow_requests = db.relationship("User",
+    #                 secondary='user_followings',
+    #                 primaryjoin="and_(User.id == foreign(UserFollowing.fan_id), "
+    #                             "UserFollowing.approved.op('=')(True))",
+    #                 secondaryjoin=id==UserFollowing.idol_id
+    # )
+
+    fan_requests = db.relationship("User",
+                        secondary='user_followings',
+                        primaryjoin="and_(User.id == foreign(UserFollowing.idol_id), "
+                                "UserFollowing.approved.op('=')(False))",
+                        secondaryjoin=id==db.foreign(UserFollowing.fan_id)
+    )
+
+    follow_requests = db.relationship("User",
+                        secondary='user_followings',
+                        primaryjoin="and_(User.id == foreign(UserFollowing.fan_id), "
+                                "UserFollowing.approved.op('=')(False))",
+                        secondaryjoin=id==db.foreign(UserFollowing.idol_id)
+    )
+
 
 
 
@@ -149,9 +162,9 @@ class User(db.Model, UserMixin):
             print("Already following")
             return False
 
-        self.fans.append(fan)
-        self.follower_requests.remove(fan)
-        db.session.add(self)
+        uf = UserFollowing.query.filter_by(fan_id=fan.id, idol_id=self.id).first()
+        uf.approved = True
+        db.session.add(uf)
         db.session.commit()
         return True
 
@@ -166,13 +179,13 @@ class User(db.Model, UserMixin):
             return False # already following
 
         if idol.private:
-            idol.follower_requests.append(self)
+            idol.fan_requests.append(self)
             db.session.add(idol)
             db.session.commit()
             return 'Your request has been sent'
         else:
-            self.idols.append(idol)
-            db.session.add(self)
+            uf = UserFollowing(idol_id=idol.id, fan_id=self.id, approved=True)
+            db.session.add(uf)
             db.session.commit()
             return True
 

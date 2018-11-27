@@ -2,9 +2,9 @@
 {% block title %} Feed {% endblock %}
 {% block content %}
 <div class="container mt-5">
-  {% if feed_images | length > 0 %}
+  {% if images_feed | length > 0 %}
     <div class="row justify-content-center">
-      {% for image in feed_images %}
+      {% for image in images_feed %}
         <div class="col-6 border-0 pb-5">
           <img src="{{image.image_url}}" alt="{{image.image_name}}"  class="rounded w-100"/>
           <img src="{{image.user.profile_picture_url}}" class="img-feed-thumbnail rounded-circle" />
