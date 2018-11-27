@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from instagram import db, app
 from instagram.helpers.utils import validation_preparation
 from models.image import Image
+from models.follower_request import FollowerRequest
 
 following_table = db.Table('followings', db.Model.metadata,
     db.Column('idol_id', db.Integer, db.ForeignKey('users.id'), index=True, nullable=False),
@@ -50,6 +51,18 @@ class User(db.Model, UserMixin):
     #                     secondaryjoin=id==following_table.c.fan_id,
     #                     backref = db.backref('idols')
     # )
+
+    follow_requests = db.relationship("User",
+                    secondary='follower_requests',
+                    primaryjoin=id==FollowerRequest.fan_id,
+                    secondaryjoin=id==FollowerRequest.idol_id
+    )
+
+    follower_requests = db.relationship("User",
+                    secondary='follower_requests',
+                    primaryjoin=id==db.foreign(FollowerRequest.idol_id),
+                    secondaryjoin=id==db.foreign(FollowerRequest.fan_id)
+    )
 
     feed_images = db.relationship(Image,
                     secondary=following_table,
@@ -127,26 +140,50 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def follow(self, user):
-        if self == user:
-            return False # cannot follow self
+    def approve(self, fan):
+        if self == fan:
+            print("Can't follow yourself")
+            return False
 
-        if user in self.idols:
-            return False # already following
+        if fan in self.fans:
+            print("Already following")
+            return False
 
-        self.idols.append(user)
+        self.fans.append(fan)
+        self.follower_requests.remove(fan)
         db.session.add(self)
         db.session.commit()
         return True
 
-    def unfollow(self, user):
-        if self == user:
+
+    def follow(self, idol):
+        if self == idol:
+            print("Can't follow yourself")
+            return False # cannot follow self
+
+        if idol in self.idols:
+            print("Already following so not allowed")
+            return False # already following
+
+        if idol.private:
+            idol.follower_requests.append(self)
+            db.session.add(idol)
+            db.session.commit()
+            return 'Your request has been sent'
+        else:
+            self.idols.append(idol)
+            db.session.add(self)
+            db.session.commit()
+            return True
+
+    def unfollow(self, idol):
+        if self == idol:
             return False
 
-        if not user in self.idols:
+        if not idol in self.idols:
             return False # not yet following, can't unfollow
 
-        self.idols.remove(user)
+        self.idols.remove(idol)
         db.session.add(self)
         db.session.commit()
         return True

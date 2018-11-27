@@ -69,6 +69,10 @@
             <a class="nav-link" href={{url_for('sessions.sign_in')}}>Sign In</a>
             <a class="nav-link" href={{url_for('users.new')}}>Sign Up</a>
           {% endif %}
+
+          {% if current_user.follower_requests | length > 0 %}
+            <a href="{{url_for('followings.show')}}" class="btn btn-primary">Follow Request <span class="badge badge-light">{{current_user.follower_requests | length}}</span></a>
+          {% endif %}
         </div>
       </nav>
       {% with messages = get_flashed_messages() %}

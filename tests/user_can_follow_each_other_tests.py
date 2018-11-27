@@ -28,8 +28,8 @@ def test_prep():
 
 
 
-@app.cli.command()
-def test():
+@app.cli.command('follow')
+def test_follow():
     test_prep()
 
     fan = User.query.get(fan_id)

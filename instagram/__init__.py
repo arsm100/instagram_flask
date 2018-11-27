@@ -24,7 +24,7 @@ login_manager.login_view = "sessions.sign_in"
 from models.user import User
 from models.image import Image
 from models.donation import Donation
-
+from models.follower_request import FollowerRequest
 
 @login_manager.user_loader
 def load_user(user_id):

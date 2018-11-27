@@ -23,7 +23,9 @@
         </form>
       {% endif %}
 
-      {% if not current_user.id == user.id and (not user in current_user.idols) %}
+      {% if not current_user.id == user.id and (user in current_user.follow_requests) %}
+        <span class="badge badge-secondary">Requested</span>
+      {% elif not current_user.id == user.id and (not user in current_user.idols) %}
         <form action={{url_for("followings.create")}} method="POST">
           <input type="hidden" name="idol_id" value="{{user.id}}" />
           <button class="btn btn-primary float-right" type="submit">Follow</button>

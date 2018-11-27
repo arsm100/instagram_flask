@@ -1,0 +1,13 @@
+{% extends "_base.html" %}
+{% block title %}Your followers | {% endblock %}
+{% block content %}
+  <h2>Follower Request</h2>
+
+  {% for following_request in current_user.follower_requests %}
+    <a href={{url_for('users.show', username=following_request.username)}}>{{following_request.username}}</a>
+    <form method="POST" action={{url_for("followings.create")}}>
+      <input type="hidden" name="fan_id" value="{{following_request.id}}">
+      <input type="submit" class="btn btn-primary" value="Approve">
+    </form>
+  {% endfor %}
+{% endblock %}
