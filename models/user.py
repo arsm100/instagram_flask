@@ -6,7 +6,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from instagram import db, app
 from instagram.helpers.utils import validation_preparation
-from instagram.blueprints.images.model import Image
+from models.image import Image
 
 following_table = db.Table('followings', db.Model.metadata,
     db.Column('idol_id', db.Integer, db.ForeignKey('users.id'), index=True, nullable=False),

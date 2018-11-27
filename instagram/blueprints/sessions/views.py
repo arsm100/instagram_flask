@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user
-from instagram.blueprints.users.model import User
+from models.user import User
 from instagram.blueprints.sessions.forms import SignInForm
 from instagram import app
 from instagram.helpers.google_oauth import oauth

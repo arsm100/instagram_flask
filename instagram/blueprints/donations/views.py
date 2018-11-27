@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from instagram.blueprints.users.model import User
-from instagram.blueprints.images.model import Image
-from instagram.blueprints.donations.model import Donation
+from models.user import User
+from models.image import Image
+from models.donation import Donation
 from instagram import app, db
 from instagram.helpers.braintree import gateway
 from instagram.helpers.email import send_email

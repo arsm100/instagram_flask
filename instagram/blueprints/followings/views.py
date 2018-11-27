@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, flash, request
 from flask_login import current_user
-from instagram.blueprints.users.model import User
+from models.user import User
 
 followings_blueprint = Blueprint('followings',
                             __name__,

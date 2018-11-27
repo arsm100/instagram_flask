@@ -21,9 +21,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "sessions.sign_in"
 
-from instagram.blueprints.users.model import User
-from instagram.blueprints.images.model import Image
-from instagram.blueprints.donations.model import Donation
+from models.user import User
+from models.image import Image
+from models.donation import Donation
 
 
 @login_manager.user_loader

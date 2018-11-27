@@ -1,5 +1,5 @@
 from instagram import app, db
-from instagram.blueprints.users.model import User
+from models.user import User
 
 fan_id = 1
 idol_id = 2
