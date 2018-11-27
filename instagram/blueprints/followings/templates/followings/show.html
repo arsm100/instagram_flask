@@ -1,13 +1,27 @@
 {% extends "_base.html" %}
 {% block title %}Your followers | {% endblock %}
 {% block content %}
-  <h2>Follower Request</h2>
+  <h4 class="mt-4">You have Nextagrammers who wants to follow you!</h2>
+  <div class="d-flex flex-wrap bd-highlight mt-5 mb-3">
+    {% for following_request in current_user.fan_requests %}
+      <div class="flex-fill card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">
+            <a href={{url_for("users.show", username=following_request.username)}} class="font-weight-bold">{{following_request.username}}</a>
+          </h5>
+          <img src="{{following_request.profile_picture_url}}" class="follower-image rounded-circle" />
+          <p class="mt-3 mb-3 card-text">{{following_request.description}}</p>
+          <div class="clearfix">
+            <form method="POST" action={{url_for("followings.create")}}>
+              <input type="hidden" name="fan_id" value="{{following_request.id}}">
+              <input type="submit" class="btn btn-info btn-block text-center" value="Approve">
+            </form>
+          </div>
 
-  {% for following_request in current_user.fan_requests %}
-    <a href={{url_for('users.show', username=following_request.username)}}>{{following_request.username}}</a>
-    <form method="POST" action={{url_for("followings.create")}}>
-      <input type="hidden" name="fan_id" value="{{following_request.id}}">
-      <input type="submit" class="btn btn-primary" value="Approve">
-    </form>
-  {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+
 {% endblock %}
