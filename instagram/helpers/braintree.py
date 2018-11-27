@@ -23,7 +23,7 @@ if os.environ['FLASK_ENV'] == 'development':
             private_key=config.PRIVATE_KEY
         )
     )
-elif os.environ['FLASK_ENV'] == 'development':
+elif os.environ['FLASK_ENV'] == 'production':
     gateway = braintree.BraintreeGateway(
         braintree.Configuration(
             environment=braintree.Environment.Sandbox,
