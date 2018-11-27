@@ -1,1 +1,1 @@
-web: flask db upgrade; gunicorn instagram:app --preload
+web: flask db upgrade; gunicorn app --preload
