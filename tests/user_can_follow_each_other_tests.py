@@ -1,9 +1,9 @@
 from instagram import app, db
 from instagram.blueprints.users.model import User
 
-fan_id = 10
-idol_id = 20
-idol2_id = 11
+fan_id = 1
+idol_id = 2
+idol2_id = 3
 
 def test_prep():
     fan = User.query.get(fan_id)
