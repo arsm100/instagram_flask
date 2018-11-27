@@ -8,6 +8,8 @@ from instagram import db, app
 from instagram.helpers.utils import validation_preparation
 from models.image import Image
 from models.user_following import UserFollowing
+from instagram.helpers.email import send_email
+from flask import url_for
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -169,6 +171,13 @@ class User(db.Model, UserMixin):
             idol.fan_requests.append(self)
             db.session.add(idol)
             db.session.commit()
+
+            from_email = "instagram@nextacademy.com"
+            to_email=idol.email
+            subject = f"{self.username} wants to follow you!"
+            content = f"Hey {idol.username}!\n\n You have a new following requests! Click here to review {url_for('followings.show', _external=True)}"
+
+            send_email(from_email, to_email, subject, content)
             return 'Your request has been sent'
         else:
             uf = UserFollowing(idol_id=idol.id, fan_id=self.id, approved=True)
