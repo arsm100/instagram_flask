@@ -14,7 +14,7 @@
       {% endfor %}
     </div>
   {% else %}
-    <p>No Images</p>
-  {% endif %}
+    <a href="{{url_for('users.index')}}" class='btn btn-primary'>
+  {% endif %}Start Following Some Users</a>
 </div>
 {% endblock %}

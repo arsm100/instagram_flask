@@ -42,6 +42,19 @@
         height: auto;
       }
 
+      .users-index-profile-images{
+        padding: 0.25rem;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        max-width: 100%;
+        height: auto;
+      }
+
+      .user-index-feature {
+        background-color: #EFEFEF;
+      }
+
     </style>
 
     {% block header %}{% endblock %}
@@ -50,7 +63,7 @@
   <body>
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{{url_for('home')}}">
+        <a class="navbar-brand" href="{{url_for('users.index')}}">
           <img src="{{ url_for('static', filename='favicon.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
            Nextagram
         </a>

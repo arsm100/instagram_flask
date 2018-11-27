@@ -57,6 +57,12 @@ def show(username):
         return render_template('show.html', user=user, allowed_to_view_profile=allowed_to_view_profile, client_token=client_token, images=images)
 
 
+@users_blueprint.route('/', methods=["GET"])
+def index():
+    users = User.query.all()
+    return render_template('index.html', users=users)
+
+
 @users_blueprint.route('/<id>/edit', methods=['GET'])
 @login_required
 def edit(id):

@@ -16,8 +16,9 @@
         <div class="form-group">
           {{ form.email.label }} {{ form.email(class="form-control") }}
         </div>
-        <div class="form-group">
-          {{ form.private.label }} {{ form.private(class="form-control") }}
+        <div class="form-group form-check">
+          {{ form.private(class="form-check-input") }}
+          {{ form.private.label(class="form-check-label") }}
         </div>
         <div class="form-group">
           {{ form.description.label }} {{ form.description(class="form-control") }}

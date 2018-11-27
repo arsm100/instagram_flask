@@ -50,8 +50,10 @@
             </form>
           {% endif %}
 
-          {% if current_user.id != user.id %}
+          {% if current_user.is_authenticated and current_user.id != user.id %}
             <button class="donate btn btn-primary" type="button" value="{{image.id}}" onClick="startDonation(this)">Donate</button>
+          {% elif current_user.id != user.id %}
+            <button class="donate btn btn-secondary" type="button" value="{{image.id}}">Donate</button>
           {% endif %}
         </div>
       {% endfor %}
