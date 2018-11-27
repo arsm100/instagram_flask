@@ -56,19 +56,6 @@ class User(db.Model, UserMixin):
                     order_by="desc(Image.id)" # latest images first
     )
 
-    # follow_requests = db.relationship("User",
-    #                 secondary='user_followings',
-    #                 primaryjoin=id==FollowerRequest.fan_id,
-    #                 secondaryjoin=id==FollowerRequest.idol_id
-    # )
-
-    # follow_requests = db.relationship("User",
-    #                 secondary='user_followings',
-    #                 primaryjoin="and_(User.id == foreign(UserFollowing.fan_id), "
-    #                             "UserFollowing.approved.op('=')(True))",
-    #                 secondaryjoin=id==UserFollowing.idol_id
-    # )
-
     fan_requests = db.relationship("User",
                         secondary='user_followings',
                         primaryjoin="and_(User.id == foreign(UserFollowing.idol_id), "

@@ -47,8 +47,11 @@ def show(username):
     if user:
         client_token = gateway.client_token.generate()
 
-        allowed_to_view_profile = not user.private or \
-            (current_user.is_authenticated and current_user.id == user.id)
+        allowed_to_view_profile = \
+            (current_user.is_authenticated and current_user.id == user.id) or \
+                current_user in user.fans or \
+                not user.private
+
 
         images = user.images
         return render_template('show.html', user=user, allowed_to_view_profile=allowed_to_view_profile, client_token=client_token, images=images)
