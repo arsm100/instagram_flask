@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, login_required, current_user
-from instagram.users.model import User
-from instagram.users.forms import NewUserForm, EditUserForm
+from models.user import User
+from instagram.blueprints.users.forms import NewUserForm, EditUserForm
 from instagram import app, db
-from instagram.helpers import upload_file_to_s3, allowed_profile_images, delete_file_from_s3
+from instagram.helpers.image_uploader import upload_file_to_s3, allowed_profile_images, delete_file_from_s3
 from werkzeug.utils import secure_filename
+from instagram.helpers.braintree import gateway
 
 
 users_blueprint = Blueprint('users',
@@ -44,7 +45,22 @@ def show(username):
     user = User.query.filter_by(username=username).first()
 
     if user:
-        return render_template('show.html', user=user)
+        client_token = gateway.client_token.generate()
+
+        allowed_to_view_profile = \
+            (current_user.is_authenticated and current_user.id == user.id) or \
+                current_user in user.fans or \
+                not user.private
+
+
+        images = user.images
+        return render_template('show.html', user=user, allowed_to_view_profile=allowed_to_view_profile, client_token=client_token, images=images)
+
+
+@users_blueprint.route('/', methods=["GET"])
+def index():
+    users = User.query.all()
+    return render_template('index.html', users=users)
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
@@ -102,6 +118,8 @@ def upload_profile_image(id):
 
     if file and allowed_profile_images(file.filename):
         old_filename = user.profile_picture
+        delete_file_from_s3(old_filename, app.config["S3_BUCKET"])
+
         file.filename = secure_filename(user.username + "-" + file.filename)
         output = upload_file_to_s3(file, app.config["S3_BUCKET"])
         user.profile_picture = file.filename
@@ -109,7 +127,6 @@ def upload_profile_image(id):
         db.session.add(user)
         db.session.commit()
 
-        delete_file_from_s3(old_filename, app.config["S3_BUCKET"])
 
         flash("Profile Picture Updated!")
 
@@ -121,6 +138,6 @@ def upload_profile_image(id):
 @users_blueprint.route('/search', methods=['POST'])
 def search():
     username = request.form["username"]
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter(User.username.ilike(f'%{username}%')).first()
 
     return redirect(url_for("users.show", username=user.username))

@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from instagram.users.model import User
-from instagram.images.model import Image
+from models.user import User
+from models.image import Image
 from instagram import app, db
-from instagram.helpers import upload_file_to_s3, delete_file_from_s3, allowed_images
+from instagram.helpers.image_uploader import upload_file_to_s3, delete_file_from_s3, allowed_images
 from werkzeug.utils import secure_filename
 
 

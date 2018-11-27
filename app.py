@@ -1,5 +1,6 @@
 from instagram import app
 from flask import render_template
+from tests import * # for testing
 
 
 @app.errorhandler(500)
