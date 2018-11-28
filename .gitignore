@@ -1,4 +1,7 @@
 .vscode
 *.DS_Store
 *__pycache__
-.env
+*.env
+instagram/static/.webassets-cache
+instagram/static/gen
+to-do

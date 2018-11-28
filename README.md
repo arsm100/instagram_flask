@@ -12,6 +12,10 @@ FLASK_APP='app'
 FLASK_ENV='development'
 DATABASE_URL="postgres://localhost:5432/instagram"
 SECRET_KEY="secretkey"
+APP_SETTINGS="config.DevelopmentConfig"
+S3_BUCKET=""
+S3_KEY=""
+S3_SECRET=""
 ```
 
 ## To Setup
