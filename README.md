@@ -16,6 +16,12 @@ APP_SETTINGS="config.DevelopmentConfig"
 S3_BUCKET=""
 S3_KEY=""
 S3_SECRET=""
+BRAINTREE_MERCHANT_ID=
+BRAINTREE_PUBLIC_KEY=
+BRAINTREE_PRIVATE_KEY=
+SENDGRID_API_KEY=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
 ```
 
 ## To Setup
@@ -32,6 +38,7 @@ flask run
 ```
 
 ## To run shell with environment variables loaded
+
 ```bash
 flask shell
 ```
