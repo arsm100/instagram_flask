@@ -17,7 +17,7 @@ def google_sign_in():
 
 @sessions_blueprint.route('/authorize/google')
 def authorize():
-    token = oauth.google.authorize_access_token()
+    oauth.google.authorize_access_token()
     email = oauth.google.get('https://www.googleapis.com/oauth2/v2/userinfo').json()['email']
     user = User.query.filter_by(email=email).first()
 

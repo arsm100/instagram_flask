@@ -21,9 +21,13 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(), index=True, nullable=False)
     description = db.Column(db.Text)
     profile_picture = db.Column(db.String())
-    images = db.relationship('Image', backref='user', lazy=True, order_by="desc(Image.id)")
     private = db.Column(db.Boolean)
 
+    images = db.relationship('Image',
+                    backref='user',
+                    lazy=True,
+                    order_by="desc(Image.id)",
+                    cascade="delete, delete-orphan")
 
     #### DEFINING SELF REFERENTIAL MANY-TO-MANY RELATIONSHIP ####
     #### OPTION 1 ####
@@ -55,7 +59,8 @@ class User(db.Model, UserMixin):
                     primaryjoin="and_(User.id == foreign(UserFollowing.fan_id), "
                                 "UserFollowing.approved.op('=')(True))",
                     secondaryjoin=UserFollowing.idol_id==db.foreign(Image.user_id),
-                    order_by="desc(Image.id)" # latest images first
+                    order_by="desc(Image.id)", # latest images first
+                    viewonly=True
     )
 
     fan_requests = db.relationship("User",
