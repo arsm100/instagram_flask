@@ -66,5 +66,7 @@ app.register_blueprint(followings_blueprint, url_prefix='/follow')
 
 ## API Routes ##
 from instagram_api.blueprints.images.views import images_api_blueprint
+from instagram_api.blueprints.users.views import users_api_blueprint
 
 app.register_blueprint(images_api_blueprint, url_prefix='/api/v1/images')
+app.register_blueprint(users_api_blueprint, url_prefix='/api/v1/users')

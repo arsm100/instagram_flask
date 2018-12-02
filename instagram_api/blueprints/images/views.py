@@ -20,5 +20,3 @@ def index():
     images = [image[1] for image in images]
 
     return jsonify(images)
-
-
