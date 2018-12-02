@@ -63,3 +63,8 @@ app.register_blueprint(images_blueprint, url_prefix='/images')
 app.register_blueprint(donations_blueprint, url_prefix='/donations')
 app.register_blueprint(feed_blueprint, url_prefix='/feed')
 app.register_blueprint(followings_blueprint, url_prefix='/follow')
+
+## API Routes ##
+from instagram_api.blueprints.images.views import images_api_blueprint
+
+app.register_blueprint(images_api_blueprint, url_prefix='/api/v1/images')
