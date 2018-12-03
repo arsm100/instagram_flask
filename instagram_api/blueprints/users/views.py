@@ -1,5 +1,4 @@
 from flask import jsonify, Blueprint, request
-from instagram import app
 from models.user import User
 
 users_api_blueprint = Blueprint('users_api',
