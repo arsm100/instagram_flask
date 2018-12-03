@@ -8,8 +8,9 @@ users_api_blueprint = Blueprint('users_api',
 
 @users_api_blueprint.route('/', methods=['GET'])
 def index():
-    users = User.query.with_entities(User.id).all()
+    users = User.query.all()
 
-    users = [str(user[0]) for user in users]
+    # there is probably a more efficient to do this
+    users = [{"id": int(user.id), "username": user.username, "profileImage": user.profile_picture_url} for user in users]
 
     return jsonify(users)
