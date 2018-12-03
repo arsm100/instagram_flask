@@ -12,8 +12,8 @@ class Donation(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     donor_id = db.Column(db.Integer, db.ForeignKey('users.id'),
-                        nullable=False, index=True)
-    image_id = db.Column(db.Integer, db.ForeignKey('images.id'),
+                        nullable=False, index=True) # would modify to be nullable and if it's null, it's donated by an anonymous donor
+    image_id = db.Column(db.Integer, db.ForeignKey('images.id'), # would modify to be nullable and if it's null, just say it's a deleted image (to keep record of deletion)
                         nullable=False, index=True)
     amount = db.Column(db.Numeric(), nullable=False)
 

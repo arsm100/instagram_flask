@@ -22,3 +22,7 @@ class Image(db.Model, UserMixin):
     @hybrid_property
     def image_url(self):
         return f"{app.config['S3_LOCATION']}{self.image_name}"
+
+    @staticmethod
+    def url(image_name):
+      return app.config['S3_LOCATION'] + image_name

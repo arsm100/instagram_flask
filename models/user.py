@@ -10,6 +10,8 @@ from models.image import Image
 from models.user_following import UserFollowing
 from instagram.helpers.email import send_email
 from flask import url_for
+import datetime
+import jwt
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -21,9 +23,13 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(), index=True, nullable=False)
     description = db.Column(db.Text)
     profile_picture = db.Column(db.String())
-    images = db.relationship('Image', backref='user', lazy=True, order_by="desc(Image.id)")
     private = db.Column(db.Boolean)
 
+    images = db.relationship('Image',
+                    backref='user',
+                    lazy=True,
+                    order_by="desc(Image.id)",
+                    cascade="delete, delete-orphan")
 
     #### DEFINING SELF REFERENTIAL MANY-TO-MANY RELATIONSHIP ####
     #### OPTION 1 ####
@@ -55,7 +61,8 @@ class User(db.Model, UserMixin):
                     primaryjoin="and_(User.id == foreign(UserFollowing.fan_id), "
                                 "UserFollowing.approved.op('=')(True))",
                     secondaryjoin=UserFollowing.idol_id==db.foreign(Image.user_id),
-                    order_by="desc(Image.id)" # latest images first
+                    order_by="desc(Image.id)", # latest images first
+                    viewonly=True
     )
 
     fan_requests = db.relationship("User",
@@ -196,3 +203,38 @@ class User(db.Model, UserMixin):
         db.session.add(self)
         db.session.commit()
         return True
+
+    def encode_auth_token(self, user_id):
+        """
+        Generates the Auth Token
+        :return: string
+        """
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=0),
+                'iat': datetime.datetime.utcnow(),
+                'sub': user_id
+            }
+            return jwt.encode(
+                payload,
+                app.config.get('SECRET_KEY'),
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
+
+    @staticmethod
+    def decode_auth_token(auth_token):
+        """
+        Decodes the auth token
+        :param auth_token:
+        :return: integer|string
+        """
+        try:
+            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
+            return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 0
+        except jwt.InvalidTokenError:
+            return 0
