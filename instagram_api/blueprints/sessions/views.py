@@ -2,8 +2,9 @@ from flask import jsonify, Blueprint, request, make_response
 from models.user import User
 
 sessions_api_blueprint = Blueprint('sessions_api',
-                             __name__,
-                             template_folder='templates')
+                                   __name__,
+                                   template_folder='templates')
+
 
 @sessions_api_blueprint.route('/login', methods=['POST'])
 def sign_in():
@@ -18,7 +19,8 @@ def sign_in():
         responseObject = {
             'status': 'success',
             'message': 'Successfully signed in.',
-            'auth_token': auth_token.decode()
+            'auth_token': auth_token.decode(),
+            'user': {"id": int(user.id), "username": user.username, "profileImage": user.profile_picture_url}
         }
 
         return make_response(jsonify(responseObject)), 201
